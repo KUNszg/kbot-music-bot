@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const config = require("./config");
-const amqplib = require('amqplib');
+//const amqplib = require('amqplib');
 const {Player} = require("discord-music-player");
 
 const client = new Discord.Client({
@@ -23,17 +23,17 @@ const player = new Player(client, {
 
 client.player = player;
 
-const queue = 'KBOT.MUSIC_PLAYER';
+//const queue = 'KBOT.MUSIC_PLAYER';
 
-const opt = {credentials: require('amqplib').credentials.plain(config.rabbitUser, config.rabbitPass)};
+//const opt = {credentials: require('amqplib').credentials.plain(config.rabbitUser, config.rabbitPass)};
 
 let songData = [];
 
 (async () => {
-    const conn = await amqplib.connect(config.rabbitUrl, opt);
-
-    const rabbitConsumer = await conn.createChannel();
-    await rabbitConsumer.assertQueue(queue);
+    // const conn = await amqplib.connect(config.rabbitUrl, opt);
+    //
+    // const rabbitConsumer = await conn.createChannel();
+    // await rabbitConsumer.assertQueue(queue);
 
     // Rabbit listener
     // rabbitConsumer.consume(queue, (msg) => {
@@ -46,7 +46,7 @@ let songData = [];
     // });
 
     // Rabbit sender
-    const publishMessage = await conn.createChannel();
+    //const publishMessage = await conn.createChannel();
 
     const playerAction = async () => {
         const {RepeatMode} = require('discord-music-player');
@@ -89,7 +89,7 @@ let songData = [];
 
                 songData.push(songObject);
 
-                publishMessage.sendToQueue(queue, Buffer.from(JSON.stringify(songObject)));
+              //  publishMessage.sendToQueue(queue, Buffer.from(JSON.stringify(songObject)));
             }
 
             if (command === 'playlist') {
