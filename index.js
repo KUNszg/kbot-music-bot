@@ -27,14 +27,14 @@ const queue = 'KBOT.MUSIC_PLAYER';
 
 const opt = {credentials: require('amqplib').credentials.plain(config.rabbitUser, config.rabbitPass)};
 
-const conn = await amqplib.connect(config.rabbitUrl, opt);
-
-const rabbitConsumer = await conn.createChannel();
-await rabbitConsumer.assertQueue(queue);
-
 let songData = [];
 
 (async () => {
+    const conn = await amqplib.connect(config.rabbitUrl, opt);
+
+    const rabbitConsumer = await conn.createChannel();
+    await rabbitConsumer.assertQueue(queue);
+
     // Rabbit listener
     // rabbitConsumer.consume(queue, (msg) => {
     //     if (msg !== null) {
@@ -242,7 +242,7 @@ let songData = [];
         if (getSong) {
             const channel = client.channels.cache.get(getSong.channel);
 
-            channel.send(`\`\`\`▶️ Now playing: \n\n Song: ${song.name} \n\n Author: ${song.author} \n \n ⌛ ${song.duration} min\`\`\`  \n requested by <@${getSong.memberObject.id}>`);
+            channel.send(`\`\`\`▶️ Now playing: \n\n Song: ${song.name} \n\n Author: ${song.author} \n \n ⌛ ${song.duration}\`\`\`  \n requested by <@${getSong.memberObject.id}>`);
 
             songData = songData.filter(function (el) {
                 return el.songData.name !== song.name;
