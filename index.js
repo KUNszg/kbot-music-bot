@@ -29,6 +29,12 @@ client.player = player;
 
 let songData = [];
 
+const sendMessageQueued = (channel, responseMessage) => {
+    if (channel && responseMessage) {
+        channel.send(responseMessage);
+    }
+}
+
 (async () => {
     // const conn = await amqplib.connect(config.rabbitUrl, opt);
     //
@@ -89,7 +95,10 @@ let songData = [];
 
                 songData.push(songObject);
 
-              //  publishMessage.sendToQueue(queue, Buffer.from(JSON.stringify(songObject)));
+                sendMessageQueued(client.channels.cache.get(message.channel.id),
+                    `\`\`\`🔁 A song has been queued: \n\n Song: ${song.name} \n\n Author: ${song.author} \n \n ⌛ ${song.duration}\`\`\`  \n Queued by <@${Member.id}>`);
+
+                //  publishMessage.sendToQueue(queue, Buffer.from(JSON.stringify(songObject)));
             }
 
             if (command === 'playlist') {
@@ -232,7 +241,7 @@ let songData = [];
         })
     }
 
-    const sendMessage = (queue, song) => {
+    const sendMessagePlaying = (queue, song) => {
         if (!song.name) {
             return;
         }
@@ -254,15 +263,15 @@ let songData = [];
         await playerAction();
 
         client.player.on('songFirst', (queue, song) => {
-            sendMessage(queue, song);
+            sendMessagePlaying(queue, song);
         });
 
         client.player.on('songChanged', (queue, song) => {
-            sendMessage(queue, song);
+            sendMessagePlaying(queue, song);
         });
 
         client.player.on('songAdd', (queue, song) => {
-            sendMessage(queue, song);
+            sendMessagePlaying(queue, song);
         });
     });
 
